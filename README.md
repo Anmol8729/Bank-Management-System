@@ -374,5 +374,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**SecureBank Management System** - Built with ❤️ using Java, Maven, and modern web technologies.</content>
-<parameter name="filePath">d:\Desktop\Files (1)\bank-management\README.md
+**SecureBank Management System** - Built with ❤️ by Anmol Yadav
