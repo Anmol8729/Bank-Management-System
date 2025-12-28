@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SecureBank - Professional Banking System</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<style>
+:root {
+    --primary: #1a365d;
+    --primary-light: #2d3748;
+    --secondary: #3182ce;
+    --accent: #e53e3e;
+    --success: #38a169;
+    --warning: #d69e2e;
+    --gray-50: #f7fafc;
+    --gray-100: #edf2f7;
+    --gray-200: #e2e8f0;
+    --gray-300: #cbd5e0;
+    --gray-600: #718096;
+    --gray-800: #2d3748;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.07);
+    --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+    --shadow-xl: 0 20px 25px rgba(0,0,0,0.1);
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: var(--gray-800);
+    line-height: 1.6;
+}
+
+/* LOADING SPINNER */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ALERTS */
+.alert {
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 500;
+    animation: slideDown 0.3s ease-out;
+}
+
+.alert-success {
+    background: #f0fff4;
+    color: var(--success);
+    border: 1px solid #c6f6d5;
+}
+
+.alert-error {
+    background: #fed7d7;
+    color: var(--accent);
+    border: 1px solid #feb2b2;
+}
+
+.alert-info {
+    background: #ebf8ff;
+    color: var(--secondary);
+    border: 1px solid #90cdf4;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* LOGIN PAGE */
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.login-box {
+    width: 100%;
+    max-width: 480px;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(20px);
+    padding: 3rem;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-xl);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: slideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.login-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--secondary), var(--primary));
+}
+
+.login-box h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--primary);
+    font-size: 2rem;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.login-box h2 i {
+    color: var(--secondary);
+    font-size: 1.5rem;
+}
+
+/* HEADER */
+header {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    padding: 1.25rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--shadow-md);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--primary);
+    font-family: 'Poppins', sans-serif;
+}
+
+header h1 i {
+    color: var(--secondary);
+    font-size: 1.5rem;
+}
+
+header .logout a {
+    text-decoration: none;
+    color: var(--accent);
+    font-weight: 600;
+    padding: 0.625rem 1.25rem;
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 2px solid transparent;
+}
+
+header .logout a:hover {
+    background: var(--accent);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+/* LAYOUT */
+.container {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    min-height: calc(100vh - 80px);
+    gap: 0;
+}
+
+/* SIDEBAR */
+.sidebar {
+    background: linear-gradient(180deg, var(--primary) 0%, var(--primary-light) 100%);
+    padding: 2.5rem 2rem;
+    color: white;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.03"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.03"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.02"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    pointer-events: none;
+}
+
+.sidebar h2 {
+    margin-bottom: 2rem;
+    border-bottom: 2px solid rgba(255,255,255,0.2);
+    padding-bottom: 1rem;
+    font-weight: 600;
+    font-size: 1.125rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+    z-index: 1;
+}
+
+.sidebar h2 i {
+    color: var(--secondary);
+}
+
+.sidebar nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.sidebar a {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.875rem 1.25rem;
+    color: rgba(255,255,255,0.9);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition: var(--transition);
+    font-weight: 500;
+    position: relative;
+    border: 1px solid transparent;
+}
+
+.sidebar a:hover, .sidebar a.active {
+    background: rgba(255,255,255,0.1);
+    color: white;
+    transform: translateX(4px);
+    border-color: rgba(255,255,255,0.2);
+    box-shadow: var(--shadow-md);
+}
+
+.sidebar a i {
+    width: 20px;
+    font-size: 1.125rem;
+}
+
+/* MAIN CONTENT */
+.main {
+    padding: 2.5rem;
+    background: linear-gradient(135deg, var(--gray-50) 0%, var(--gray-100) 100%);
+    overflow-y: auto;
+    position: relative;
+}
+
+.main::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="rgba(0,0,0,0.03)"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>');
+    pointer-events: none;
+}
+
+/* DASHBOARD CARDS */
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.card {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--gray-200);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--secondary), var(--primary));
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+    border-color: var(--gray-300);
+}
+
+.card-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--secondary), var(--primary));
+    color: white;
+}
+
+.card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: 0.5rem;
+}
+
+.card p {
+    color: var(--gray-600);
+    font-size: 0.875rem;
+    line-height: 1.5;
+}
+
+/* PANELS */
+.panel {
+    background: white;
+    padding: 2.5rem;
+    border-radius: var(--radius-lg);
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--gray-200);
+    transition: var(--transition);
+    display: none;
+    animation: slideIn 0.5s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--secondary), var(--primary));
+}
+
+.panel:hover {
+    box-shadow: var(--shadow-lg);
+}
+
+.panel.active { display: block; }
+
+.panel h2 {
+    margin-bottom: 2rem;
+    color: var(--primary);
+    font-size: 1.75rem;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.panel h2 i {
+    color: var(--secondary);
+    font-size: 1.5rem;
+}
+
+/* FORM ELEMENTS */
+.form-row {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    align-items: flex-start;
+}
+
+.form-row label {
+    min-width: 160px;
+    font-weight: 600;
+    color: var(--gray-800);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.95rem;
+    padding-top: 0.5rem;
+}
+
+.form-row label i {
+    color: var(--secondary);
+    font-size: 1rem;
+}
+
+.form-row input, .form-row select, .form-row textarea {
+    flex: 1;
+    padding: 1rem;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-md);
+    font-size: 1rem;
+    transition: var(--transition);
+    background: white;
+    font-family: inherit;
+}
+
+.form-row input:focus, .form-row select:focus, .form-row textarea:focus {
+    outline: none;
+    border-color: var(--secondary);
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+    transform: translateY(-1px);
+}
+
+.form-row input::placeholder, .form-row textarea::placeholder {
+    color: var(--gray-600);
+    opacity: 0.7;
+}
+
+.form-row textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* BUTTONS */
+.btn {
+    background: linear-gradient(135deg, var(--secondary), var(--primary));
+    color: white;
+    border: none;
+    padding: 1rem 2.5rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: 'Inter', sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--success), #2f855a);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, var(--accent), #c53030);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, var(--gray-600), var(--gray-800));
+}
+
+/* DATA TABLES */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1.5rem;
+    background: white;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+.data-table th, .data-table td {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.data-table th {
+    background: linear-gradient(135deg, var(--gray-50), var(--gray-100));
+    font-weight: 600;
+    color: var(--gray-800);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.data-table tr:hover {
+    background: var(--gray-50);
+}
+
+.data-table tr:last-child td {
+    border-bottom: none;
+}
+
+.data-table .status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-active { background: #c6f6d5; color: var(--success); }
+.status-inactive { background: #fed7d7; color: var(--accent); }
+.status-pending { background: #fef5e7; color: var(--warning); }
+
+.data-table .action-btn {
+    padding: 0.5rem;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: var(--transition);
+    margin-right: 0.5rem;
+}
+
+.action-btn.edit { background: var(--secondary); color: white; }
+.action-btn.delete { background: var(--accent); color: white; }
+.action-btn.view { background: var(--gray-600); color: white; }
+
+.action-btn:hover {
+    transform: scale(1.1);
+}
+
+/* ANIMATIONS */
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 1024px) {
+    .container {
+        grid-template-columns: 280px 1fr;
+    }
+
+    .dashboard {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -300px;
+        width: 300px;
+        height: 100vh;
+        z-index: 1000;
+        transition: left 0.3s ease;
+    }
+
+    .sidebar.open {
+        left: 0;
+    }
+
+    .main {
+        padding: 1.5rem;
+    }
+
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+
+    .form-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+
+    .form-row label {
+        min-width: auto;
+        margin-bottom: 0.5rem;
+        padding-top: 0;
+    }
+
+    .login-box {
+        margin: 2rem 1rem;
+        padding: 2rem;
+    }
+
+    .panel {
+        padding: 2rem;
+    }
+
+    .data-table {
+        font-size: 0.875rem;
+    }
+
+    .data-table th, .data-table td {
+        padding: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .main {
+        padding: 1rem;
+    }
+
+    .panel {
+        padding: 1.5rem;
+    }
+
+    .btn {
+        padding: 0.875rem 2rem;
+        font-size: 0.9rem;
+    }
+
+    header h1 {
+        font-size: 1.5rem;
+    }
+}
+
+/* FOOTER */
+footer {
+    background: var(--primary);
+    color: white;
+    padding: 2rem 0;
+    margin-top: 3rem;
+    text-align: center;
+    position: relative;
+}
+
+footer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--secondary), var(--accent));
+}
+
+footer .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+footer p {
+    margin: 0;
+    font-size: 0.875rem;
+    opacity: 0.9;
+}
+
+footer .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1rem;
+}
+
+footer a {
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: var(--transition);
+}
+
+footer a:hover {
+    color: white;
+    text-decoration: underline;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= LOGIN PAGE ================= -->
+<div class="login-box panel active" id="loginPanel">
+    <h2><i class="fas fa-sign-in-alt"></i> Secure Login</h2>
+
+    <!-- REAL AUTHENTICATION -->
+    <form action="login" method="post">
+        <div class="form-row">
+            <label><i class="fas fa-user"></i> Username</label>
+            <input type="text" name="username" placeholder="Enter username" required>
+        </div>
+
+        <div class="form-row">
+            <label><i class="fas fa-lock"></i> Password</label>
+            <input type="password" name="password" placeholder="Enter password" required>
+        </div>
+
+        <button class="btn" type="submit"><i class="fas fa-sign-in-alt"></i> Login</button>
+    </form>
+</div>
+
+<!-- ================= MAIN APP ================= -->
+<div id="app" style="display:none;">
+
+<header>
+    <h1><i class="fas fa-university"></i> Bank Management System</h1>
+    <div class="logout">
+        <a href="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+</header>
+
+<div class="container">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h2><i class="fas fa-bars"></i> Operations</h2>
+        <nav>
+            <a href="#" onclick="show('dashboard')" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="#" onclick="show('customer')"><i class="fas fa-user-plus"></i> Create Customer</a>
+            <a href="#" onclick="show('account')"><i class="fas fa-credit-card"></i> Create Account</a>
+            <a href="#" onclick="show('deposit')"><i class="fas fa-plus-circle"></i> Deposit</a>
+            <a href="#" onclick="show('withdraw')"><i class="fas fa-minus-circle"></i> Withdraw</a>
+            <a href="#" onclick="show('transfer')"><i class="fas fa-exchange-alt"></i> Transfer</a>
+            <a href="#" onclick="show('balance')"><i class="fas fa-search-dollar"></i> Balance Enquiry</a>
+        </nav>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+
+        <!-- DASHBOARD -->
+        <div class="panel active" id="dashboard">
+            <h2><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
+
+            <div class="dashboard">
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Total Customers</h3>
+                    <p>Manage customer accounts and information</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <h3>Account Management</h3>
+                    <p>Create and manage bank accounts</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <h3>Transactions</h3>
+                    <p>Deposit, withdraw, and transfer funds</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Reports</h3>
+                    <p>View account balances and statements</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CUSTOMER -->
+        <div class="panel" id="customer">
+            <h2><i class="fas fa-user-plus"></i> Create Customer</h2>
+            <form action="createCustomer" method="post">
+                <div class="form-row">
+                    <label><i class="fas fa-user"></i> Full Name</label>
+                    <input type="text" name="fullName" placeholder="Enter full name" required>
+                </div>
+                <div class="form-row">
+                    <label><i class="fas fa-calendar"></i> Date of Birth</label>
+                    <input type="date" name="dob">
+                </div>
+                <div class="form-row">
+                    <label><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" name="email" placeholder="email@example.com">
+                </div>
+                <div class="form-row">
+                    <label><i class="fas fa-phone"></i> Phone</label>
+                    <input type="tel" name="phone" placeholder="+1 (555) 123-4567">
+                </div>
+                <div class="form-row">
+                    <label><i class="fas fa-map-marker-alt"></i> Address</label>
+                    <input type="text" name="address" placeholder="Enter address">
+                </div>
+                <button class="btn" type="submit"><i class="fas fa-save"></i> Create Customer</button>
+            </form>
+        </div>
+
+        <!-- ACCOUNT -->
+        <div class="panel" id="account">
+            <h2><i class="fas fa-credit-card"></i> Create Account</h2>
+            <form action="createAccount" method="post">
+                <div class="form-row">
+                    <label><i class="fas fa-id-card"></i> Customer ID</label>
+                    <input type="number" name="customerId" placeholder="Enter customer ID" required>
+                </div>
+                <div class="form-row">
+                    <label><i class="fas fa-tags"></i> Account Type</label>
+                    <select name="accountType" required>
+                        <option value="">Select type</option>
+                        <option value="SAVINGS">Savings</option>
+                        <option value="CURRENT">Current</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <label><i class="fas fa-dollar-sign"></i> Initial Deposit</label>
+                    <input type="number" name="amount" step="0.01" placeholder="0.00" min="0">
+                </div>
+                <button class="btn" type="submit"><i class="fas fa-plus"></i> Create Account</button>
+            </form>
+        </div>
+
+        <!-- DEPOSIT -->
+        <div class="panel" id="deposit">
+            <h2><i class="fas fa-plus-circle"></i> Deposit</h2>
+            <form action="deposit" method="post">
+                <div class="form-row">
+                    <label><i class="fas fa-credit-card"></i> Account ID</label>
+                    <input type="number" name="accountId" placeholder="Enter account ID" required>
+                </div>
+                <div class="form-row">
+                    <label><i class="fas fa-dollar-sign"></i> Amount</label>
+                    <input type="number" name="amount" step="0.01" placeholder="0.00" min="0.01" required>
+                </div>
+                <button class="btn" type="submit"><i class="fas fa-arrow-up"></i> Deposit</button>
+            </form>
+        </div>
+
+        <!-- WITHDRAW -->
+        <div class="panel" id="withdraw">
+            <h2><i class="fas fa-minus-circle"></i> Withdraw</h2>
+            <form action="withdraw" method="post">
+                <div class="form-row">
+                    <label><i class="fas fa-credit-card"></i> Account ID</label>
+                    <input type="number" name="accountId" placeholder="Enter account ID" required>
+                </div>
+                <div class="form-row">
+                    <label><i class="fas fa-dollar-sign"></i> Amount</label>
+                    <input type="number" name="amount" step="0.01" placeholder="0.00" min="0.01" required>
+                </div>
+                <button class="btn" type="submit"><i class="fas fa-arrow-down"></i> Withdraw</button>
+            </form>
+        </div>
+
+        <!-- TRANSFER -->
+        <div class="panel" id="transfer">
+            <h2><i class="fas fa-exchange-alt"></i> Transfer</h2>
+            <form action="transfer" method="post">
+                <div class="form-row">
+                    <label><i class="fas fa-arrow-right"></i> From Account</label>
+                    <input type="number" name="fromAcc" placeholder="Sender account ID" required>
+                </div>
+                <div class="form-row">
+                    <label><i class="fas fa-arrow-left"></i> To Account</label>
+                    <input type="number" name="toAcc" placeholder="Receiver account ID" required>
+                </div>
+                <div class="form-row">
+                    <label><i class="fas fa-dollar-sign"></i> Amount</label>
+                    <input type="number" name="amount" step="0.01" placeholder="0.00" min="0.01" required>
+                </div>
+                <button class="btn" type="submit"><i class="fas fa-paper-plane"></i> Transfer</button>
+            </form>
+        </div>
+
+        <!-- BALANCE -->
+        <div class="panel" id="balance">
+            <h2><i class="fas fa-search-dollar"></i> Balance Enquiry</h2>
+            <form action="balance" method="post">
+                <div class="form-row">
+                    <label><i class="fas fa-credit-card"></i> Account ID</label>
+                    <input type="number" name="accountId" placeholder="Enter account ID" required>
+                </div>
+                <button class="btn" type="submit"><i class="fas fa-search"></i> Check Balance</button>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 SecureBank Management System. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Contact Support</a>
+                <a href="#">Security</a>
+            </div>
+        </div>
+    </footer>
+
+</div>
+</div>
+
+<script>
+    function show(id) {
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    // Session check (simple UI logic)
+    if (document.cookie.includes('JSESSIONID')) {
+        document.getElementById("loginPanel").style.display = "none";
+        document.getElementById("app").style.display = "block";
+        show('dashboard');
+    }
+</script
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+    <!-- Disable annotation scanning to avoid JAR compatibility issues -->
+    <JarScanner>
+        <JarScanFilter
+            defaultPluggabilityScan="false"
+            defaultTldScan="false" />
+    </JarScanner>
+</Context>
